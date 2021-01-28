@@ -32,10 +32,12 @@ class StockDataSet():
         if close_price_only:
             self.raw_seq = raw_df['Close'].tolist()
         else:
-            self.raw_seq = [price for tup in raw_df[['Open', 'Close']].values for price in tup]
+            self.raw_seq = [price for tup in raw_df[[
+                'Open', 'Close']].values for price in tup]
 
         self.raw_seq = np.array(self.raw_seq)
-        self.train_X, self.train_y, self.test_X, self.test_y = self._prepare_data(self.raw_seq)
+        self.train_X, self.train_y, self.test_X, self.test_y = self._prepare_data(
+            self.raw_seq)
 
     def info(self):
         return "StockDataSet [%s] train: %d test: %d" % (
@@ -51,7 +53,8 @@ class StockDataSet():
                 curr / seq[i][-1] - 1.0 for i, curr in enumerate(seq[1:])]
 
         # split into groups of num_steps
-        self.X_y = np.array([seq[i: i + self.num_steps+1] for i in range(len(seq) - self.num_steps)])
+        self.X_y = np.array([seq[i: i + self.num_steps+1]
+                             for i in range(len(seq) - self.num_steps)])
         X = self.X_y[:, :self.num_steps, :]
         y = self.X_y[:, self.num_steps, :]
 
