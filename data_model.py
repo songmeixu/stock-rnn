@@ -10,14 +10,14 @@ random.seed(time.time())
 
 class StockDataSet:
     def __init__(
-        self,
-        stock_sym,
-        input_size=1,
-        num_steps=30,
-        batch_size=64,
-        test_ratio=0.1,
-        normalized=True,
-        close_price_only=True,
+            self,
+            stock_sym,
+            input_size=1,
+            num_steps=30,
+            batch_size=64,
+            test_ratio=0.1,
+            normalized=True,
+            close_price_only=True,
     ):
         self.stock_sym = stock_sym
         self.input_size = input_size
@@ -36,13 +36,13 @@ class StockDataSet:
             self.raw_seq = raw_df["Close"].tolist()
         else:
             self.raw_seq = [
-                price for tup in raw_df[["Open", "Close"]].values for price in tup
+                price for tup in raw_df[["Open", "Close"]].values
+                for price in tup
             ]
 
         self.raw_seq = np.array(self.raw_seq)
         self.train_X, self.train_y, self.test_X, self.test_y = self._prepare_data(
-            self.raw_seq
-        )
+            self.raw_seq)
 
     def info(self):
         return "StockDataSet [%s] train: %d test: %d" % (
@@ -54,7 +54,7 @@ class StockDataSet:
     def _prepare_data(self, seq):
         # split into items of input_size
         seq = [
-            np.array(seq[i * self.input_size : (i + 1) * self.input_size])
+            np.array(seq[i * self.input_size:(i + 1) * self.input_size])
             for i in range(len(seq) // self.input_size)
         ]
 
@@ -64,10 +64,11 @@ class StockDataSet:
             ]
 
         # split into groups of num_steps
-        self.X_y = np.array(
-            [seq[i : i + self.num_steps + 1] for i in range(len(seq) - self.num_steps)]
-        )
-        X = self.X_y[:, : self.num_steps, :]
+        self.X_y = np.array([
+            seq[i:i + self.num_steps + 1]
+            for i in range(len(seq) - self.num_steps)
+        ])
+        X = self.X_y[:, :self.num_steps, :]
         y = self.X_y[:, self.num_steps, :]
 
         train_size = int(len(X) * (1.0 - self.test_ratio))
@@ -81,7 +82,7 @@ class StockDataSet:
 
         np.random.shuffle(self.X_y)
         for j in range(num_batches):
-            batch_X = self.train_X[j * batch_size : (j + 1) * batch_size]
-            batch_y = self.train_y[j * batch_size : (j + 1) * batch_size]
+            batch_X = self.train_X[j * batch_size:(j + 1) * batch_size]
+            batch_y = self.train_y[j * batch_size:(j + 1) * batch_size]
             assert set(map(len, batch_X)) == {self.num_steps}
             yield batch_X, batch_y
