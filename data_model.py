@@ -52,8 +52,8 @@ class StockDataSet():
 
         # split into groups of num_steps
         self.X_y = np.array([seq[i: i + self.num_steps+1] for i in range(len(seq) - self.num_steps)])
-        X = self.X_y[:, :num_steps, :]
-        y = self.X_y[:, num_steps, :]
+        X = self.X_y[:, :self.num_steps, :]
+        y = self.X_y[:, self.num_steps, :]
 
         train_size = int(len(X) * (1.0 - self.test_ratio))
         train_size -= train_size % self.batch_size
